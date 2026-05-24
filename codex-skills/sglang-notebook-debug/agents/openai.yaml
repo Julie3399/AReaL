@@ -1,0 +1,4 @@
+interface:
+  display_name: "SGLang Notebook Debug"
+  short_description: "Debug local SGLang notebook servers."
+  default_prompt: "Debug my local SGLang server and verify health plus generation."

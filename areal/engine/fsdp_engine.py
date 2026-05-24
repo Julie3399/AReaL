@@ -1398,7 +1398,7 @@ class FSDPEngine(TrainEngine):
             self._init_per_pp_weight_update_groups(meta, gen_pp_size)
         else:
             # PP == 1: single group spanning all inference workers.
-            group_name = "update_weight_group"
+            group_name = meta.nccl_group_name or "update_weight_group"
             self.weight_update_group_names = [group_name]
 
             meta.nccl_master_address = self.weight_update_master_addr = gethostip()
@@ -1454,7 +1454,8 @@ class FSDPEngine(TrainEngine):
 
         if dist.get_rank() == 0:
             for pp_rank in range(gen_pp_size):
-                group_name = f"update_weight_group_{pp_rank}"
+                group_base = meta.nccl_group_name or "update_weight_group"
+                group_name = f"{group_base}_{pp_rank}"
                 self.weight_update_group_names.append(group_name)
 
                 pp_meta = copy.copy(meta)
@@ -1499,7 +1500,8 @@ class FSDPEngine(TrainEngine):
         else:
             # Non rank-0 FSDP ranks do not participate in NCCL groups
             for pp_rank in range(gen_pp_size):
-                self.weight_update_group_names.append(f"update_weight_group_{pp_rank}")
+                group_base = meta.nccl_group_name or "update_weight_group"
+                self.weight_update_group_names.append(f"{group_base}_{pp_rank}")
             self.weight_update_master_addr = ""
             self.weight_update_master_port = 0
 

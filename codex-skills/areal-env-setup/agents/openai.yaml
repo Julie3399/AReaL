@@ -1,0 +1,4 @@
+interface:
+  display_name: "AReaL Env Setup"
+  short_description: "Set up AReaL notebook environment."
+  default_prompt: "Set up the AReaL math reflection notebook environment and verify SGLang works."
